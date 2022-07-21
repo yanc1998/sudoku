@@ -1,6 +1,7 @@
 class Sudoku:
     def __init__(self, board):
         self.board = board
+        self.all_solves = []
 
     def check_sudoku_sol(self, board):
         n = len(board[0])
@@ -35,9 +36,11 @@ class Sudoku:
 
     def find_unico_oculto(self, board):
         candidates = self.create_sudoku_candidates(board)
+        sol = []
         for c in candidates:
             if len(candidates[c]) == 1:
-                yield [candidates[c], c]
+                sol.append((candidates[c], c))
+        return sol
 
     def valid(self, board, posx, posy):
         col = self.find_column(board, posx, posy)
@@ -76,3 +79,28 @@ class Sudoku:
         for i in range(0, x, increment):
             for j in range(0, y, increment):
                 yield i, j
+
+    def solve(self, board):
+        self.all_solves = []
+        self._solve(board)
+        return self.all_solves
+
+    def _solve(self, board):
+
+        # poner los que tienen que ir obligado
+        unicos_oculto = self.find_unico_oculto(board)
+        while len(unicos_oculto) > 0:
+            for value, (x, y) in unicos_oculto:
+                board[x][y] = value[0]
+            unicos_oculto = self.find_unico_oculto(board)
+
+        if self.check_sudoku_sol(board):
+            self.all_solves.append(board.copy())
+            return
+
+        candidates = self.create_sudoku_candidates(board)
+        for c in candidates:
+            for value in candidates[c]:
+                board[c[0]][c[1]] = value
+                self.solve(board)
+                board[c[0]][c[1]] = 0
