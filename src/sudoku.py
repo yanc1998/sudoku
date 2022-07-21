@@ -33,6 +33,12 @@ class Sudoku:
             candidates[(x, y)] = self.valid(board, x, y)
         return candidates
 
+    def find_unico_oculto(self, board):
+        candidates = self.create_sudoku_candidates(board)
+        for c in candidates:
+            if len(candidates[c]) == 1:
+                yield [candidates[c], c]
+
     def valid(self, board, posx, posy):
         col = self.find_column(board, posx, posy)
         fil = self.find_fil(board, posx, posy)

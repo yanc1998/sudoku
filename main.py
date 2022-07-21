@@ -29,6 +29,8 @@ if __name__ == '__main__':
     b = sudoku.create_sudoku_candidates(board)
     print(a)
     print(b)
+    for c in sudoku.find_unico_oculto(board):
+        print(c)
     print_hi('PyCharm')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
